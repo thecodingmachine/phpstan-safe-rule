@@ -1,10 +1,9 @@
-[![Latest Stable Version](https://poser.pugx.org/thecodingmachine/phpstan-safe-rules/v/stable)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rules)
-[![Total Downloads](https://poser.pugx.org/thecodingmachine/phpstan-safe-rules/downloads)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rules)
-[![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/phpstan-safe-rules/v/unstable)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rules)
-[![License](https://poser.pugx.org/thecodingmachine/phpstan-safe-rules/license)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rules)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/thecodingmachine/phpstan-safe-rules/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/thecodingmachine/phpstan-safe-rules/?branch=master)
-[![Build Status](https://travis-ci.org/thecodingmachine/phpstan-safe-rules.svg?branch=master)](https://travis-ci.org/thecodingmachine/phpstan-safe-rules)
-[![Coverage Status](https://coveralls.io/repos/thecodingmachine/phpstan-safe-rules/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/phpstan-safe-rules?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/thecodingmachine/phpstan-safe-rule/v/stable)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rule)
+[![Total Downloads](https://poser.pugx.org/thecodingmachine/phpstan-safe-rule/downloads)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rule)
+[![Latest Unstable Version](https://poser.pugx.org/thecodingmachine/phpstan-safe-rule/v/unstable)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rule)
+[![License](https://poser.pugx.org/thecodingmachine/phpstan-safe-rule/license)](https://packagist.org/packages/thecodingmachine/phpstan-safe-rule)
+[![Build Status](https://travis-ci.org/thecodingmachine/phpstan-safe-rule.svg?branch=master)](https://travis-ci.org/thecodingmachine/phpstan-safe-rule)
+[![Coverage Status](https://coveralls.io/repos/thecodingmachine/phpstan-safe-rule/badge.svg?branch=master&service=github)](https://coveralls.io/github/thecodingmachine/phpstan-safe-rule?branch=master)
 
 
 PHPStan rules for thecodingmachine/safe
