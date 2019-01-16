@@ -1,4 +1,6 @@
 parameters:
     ignoreErrors:
+        - ~^Function array_combine is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\array_combine;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.$~
+    reportUnmatchedIgnoredErrors: false
 includes:
     - phpstan-safe-rule.neon
