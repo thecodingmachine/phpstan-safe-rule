@@ -25,7 +25,7 @@ class FunctionListLoader
                 throw new \RuntimeException('Could not find thecodingmachine/safe\'s functionsList.php file.');
             }
             // Let's index these functions by their name
-            self::$functions = \array_combine($functions, $functions);
+            self::$functions = \Safe\array_combine($functions, $functions);
         }
         return self::$functions;
     }
