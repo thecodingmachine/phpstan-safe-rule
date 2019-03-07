@@ -3,6 +3,7 @@
 namespace TheCodingMachine\Safe\PHPStan\Rules;
 
 use PHPStan\Testing\RuleTestCase;
+use TheCodingMachine\Safe\PHPStan\Type\Php\ReplaceSafeFunctionsDynamicReturnTypeExtension;
 
 class UseSafeFunctionsRuleTest extends RuleTestCase
 {
