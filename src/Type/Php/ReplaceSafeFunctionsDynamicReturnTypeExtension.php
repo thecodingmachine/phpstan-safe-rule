@@ -15,7 +15,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeUtils;
 
-
 class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
@@ -33,8 +32,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope
-    ): Type
-    {
+    ): Type {
         $type = $this->getPreliminarilyResolvedTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 
         $possibleTypes = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants())->getReturnType();
@@ -50,8 +48,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope
-    ): Type
-    {
+    ): Type {
         $argumentPosition = $this->functions[$functionReflection->getName()];
         if (count($functionCall->args) <= $argumentPosition) {
             return ParametersAcceptorSelector::selectSingle($functionReflection->getVariants())->getReturnType();
@@ -79,5 +76,4 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
 
         return $defaultReturnType;
     }
-
 }
