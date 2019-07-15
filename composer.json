@@ -1,7 +1,7 @@
 {
     "name": "thecodingmachine/phpstan-safe-rule",
     "description": "A PHPStan rule to detect safety issues. Must be used in conjunction with thecodingmachine/safe",
-    "type": "library",
+    "type": "phpstan-extension",
     "license": "MIT",
     "authors": [
         {
@@ -37,6 +37,11 @@
     "extra": {
         "branch-alias": {
             "dev-master": "0.1-dev"
+        },
+        "phpstan": {
+            "includes": [
+                "phpstan-safe-rule.neon"
+            ]
         }
     },
     "minimum-stability": "dev",
