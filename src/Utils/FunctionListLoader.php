@@ -9,6 +9,9 @@ use PHPStan\Reflection\MethodReflection;
 
 class FunctionListLoader
 {
+    /**
+     * @var string[]
+     */
     private static $functions;
 
     /**

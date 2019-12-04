@@ -17,7 +17,7 @@ class CallMethodRuleTest extends RuleTestCase
         $ruleLevelHelper = new RuleLevelHelper($broker, true, true, true);
         return new CallMethodsRule(
             $broker,
-            new FunctionCallParametersCheck($ruleLevelHelper, true, true),
+            new FunctionCallParametersCheck($ruleLevelHelper, true, true, true, true),
             $ruleLevelHelper,
             true,
             true
