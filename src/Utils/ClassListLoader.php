@@ -9,13 +9,16 @@ use PHPStan\Reflection\MethodReflection;
 
 class ClassListLoader
 {
+    /**
+     * @var array<class-string,class-string>
+     */
     private static $classes = [
         'DateTime' => 'DateTime',
         'DateTimeImmutable' => 'DateTimeImmutable',
     ];
 
     /**
-     * @return string[]
+     * @return class-string[]
      */
     public static function getClassList(): array
     {

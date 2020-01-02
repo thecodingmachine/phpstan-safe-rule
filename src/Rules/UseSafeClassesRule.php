@@ -17,6 +17,8 @@ use PhpParser\Node\Scalar;
 
 /**
  * This rule checks that no "unsafe" classes are instantiated in code.
+ *
+ * @implements Rule<Node\Expr\New_>
  */
 class UseSafeClassesRule implements Rule
 {
