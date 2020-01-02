@@ -15,7 +15,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar;
 
 /**
- * This rule checks that no superglobals are used in code.
+ * This rule checks that no "unsafe" functions are used in code.
  *
  * @implements Rule<Node\Expr\FuncCall>
  */
