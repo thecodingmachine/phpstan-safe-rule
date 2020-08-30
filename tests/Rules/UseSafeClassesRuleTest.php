@@ -14,7 +14,7 @@ class UseSafeClassesRuleTest extends RuleTestCase
 
     public function testDateTime()
     {
-        $this->analyse([__DIR__ . '/data/datetime.php'], [
+        @$this->analyse([__DIR__ . '/data/datetime.php'], [
             [
                 "Class DateTime is unsafe to use. Its methods can return FALSE instead of throwing an exception. Please add 'use Safe\DateTime;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
                 3,
