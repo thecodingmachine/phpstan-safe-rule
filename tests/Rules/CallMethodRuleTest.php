@@ -28,7 +28,7 @@ class CallMethodRuleTest extends RuleTestCase
     {
         // FIXME: this rule actually runs code but will always return no error because the rule executed is not the correct one.
         // This provides code coverage but assert is not ok.
-        $this->analyse([__DIR__ . '/data/safe_pregreplace.php'], []);
+        @$this->analyse([__DIR__ . '/data/safe_pregreplace.php'], []);
     }
 
 
