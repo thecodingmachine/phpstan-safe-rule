@@ -27,7 +27,7 @@ jobs:
       script:
         - *phpunit
     - php: nightly 
-      env: PREFER_LOWEST=""
+      env: PREFER_LOWEST="--ignore-platform-reqs"
       before_script:
         - *composerupdate
       script:
