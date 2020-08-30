@@ -26,6 +26,12 @@ jobs:
         - *composerupdate
       script:
         - *phpunit
+    - php: nightly 
+      env: PREFER_LOWEST=""
+      before_script:
+        - *composerupdate
+      script:
+        - *phpunit
 
 cache:
   directories:
