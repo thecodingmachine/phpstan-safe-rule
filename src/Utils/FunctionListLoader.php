@@ -24,6 +24,10 @@ class FunctionListLoader
                 $functions = require __DIR__.'/../../../safe/generated/functionsList.php';
             } elseif (\file_exists(__DIR__.'/../../vendor/thecodingmachine/safe/generated/functionsList.php')) {
                 $functions = require __DIR__.'/../../vendor/thecodingmachine/safe/generated/functionsList.php';
+            } elseif (\file_exists(__DIR__.'/../../../safe8/generated/functionsList.php')) {
+                $functions = require __DIR__.'/../../../safe8/generated/functionsList.php';
+            } elseif (\file_exists(__DIR__.'/../../vendor/thecodingmachine/safe8/generated/functionsList.php')) {
+                $functions = require __DIR__.'/../../vendor/thecodingmachine/safe8/generated/functionsList.php';
             } else {
                 throw new \RuntimeException('Could not find thecodingmachine/safe\'s functionsList.php file.');
             }
