@@ -56,22 +56,17 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         Scope $scope
     ): Type {
         $argumentPosition = $this->functions[$functionReflection->getName()];
-        $defaultReturnType = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
-            $functionCall->getArgs(),
-            $functionReflection->getVariants()
-        )
+
+        $args = $functionCall->getArgs();
+        $variants = $functionReflection->getVariants();
+        $defaultReturnType = ParametersAcceptorSelector::selectFromArgs($scope, $args, $variants)
             ->getReturnType();
-        
-        if (count($functionCall->args) <= $argumentPosition) {
+
+        if (count($args) <= $argumentPosition) {
             return $defaultReturnType;
         }
 
-        $subjectArgument = $functionCall->args[$argumentPosition];
-        if (!$subjectArgument instanceof Arg) {
-            return $defaultReturnType;
-        }
-        
+        $subjectArgument = $args[$argumentPosition];
         $subjectArgumentType = $scope->getType($subjectArgument->value);
         $mixedType = new MixedType();
         if ($subjectArgumentType->isSuperTypeOf($mixedType)->yes()) {
