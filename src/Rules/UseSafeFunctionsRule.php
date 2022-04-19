@@ -21,6 +21,11 @@ use PhpParser\Node\Scalar;
  */
 class UseSafeFunctionsRule implements Rule
 {
+    /**
+     * @see JSON_THROW_ON_ERROR
+     */
+    const JSON_THROW_ON_ERROR = 4194304;
+
     public function getNodeType(): string
     {
         return Node\Expr\FuncCall::class;
@@ -40,19 +45,18 @@ class UseSafeFunctionsRule implements Rule
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
-            if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
+            if (version_compare(PHP_VERSION, '7.3.0', '>=') && ! $node->isFirstClassCallable()) {
                 if ($functionName === "json_decode") {
-                    if (count($node->args) == 4) {
-                        if ($this->argValueIncludeJSONTHROWONERROR($node->args[3])) {
-                            return [];
-                        }
+                    $args = $node->getArgs();
+                    if (count($args) == 4 && $this->argValueIncludeJSONTHROWONERROR($args[3])) {
+                        return [];
                     }
                 }
+
                 if ($functionName === "json_encode") {
-                    if (count($node->args) >= 2) {
-                        if ($this->argValueIncludeJSONTHROWONERROR($node->args[1])) {
-                            return [];
-                        }
+                    $args = $node->getArgs();
+                    if (count($args) >= 2 && $this->argValueIncludeJSONTHROWONERROR($args[1])) {
+                        return [];
                     }
                 }
             }
@@ -83,8 +87,7 @@ class UseSafeFunctionsRule implements Rule
         }
 
         return in_array(true, array_map(function ($element) {
-            // JSON_THROW_ON_ERROR == 4194304
-            return ($element & 4194304) == 4194304;
+            return ($element & self::JSON_THROW_ON_ERROR) == self::JSON_THROW_ON_ERROR;
         }, array_filter($options, function ($element) {
             return is_int($element);
         })));
