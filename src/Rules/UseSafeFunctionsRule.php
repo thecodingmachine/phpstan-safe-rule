@@ -55,6 +55,16 @@ class UseSafeFunctionsRule implements Rule
                         }
                     }
                 }
+                if ($functionName === "json_decode" || $functionName === "json_encode") {
+                    foreach ($node->args as $arg) {
+                        // Named argument might be not place on exact "documented" position
+                        if ($arg->name instanceof Node\Identifier && $arg->name->toLowerString() === "flags") {
+                            if ($this->argValueIncludeJSONTHROWONERROR($arg)) {
+                                return [];
+                            }
+                        }
+                    }
+                }
             }
 
             return ["Function $functionName is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\$functionName;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library."];
