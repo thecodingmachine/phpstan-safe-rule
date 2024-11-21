@@ -3,33 +3,49 @@
 
 namespace TheCodingMachine\Safe\PHPStan\Utils;
 
-use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
-
 class FunctionListLoader
 {
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private static $functions;
+    private static array $functions;
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
     public static function getFunctionList(): array
     {
-        if (self::$functions === null) {
-            if (\file_exists(__DIR__.'/../../../safe/generated/functionsList.php')) {
-                $functions = require __DIR__.'/../../../safe/generated/functionsList.php';
-            } elseif (\file_exists(__DIR__.'/../../vendor/thecodingmachine/safe/generated/functionsList.php')) {
-                $functions = require __DIR__.'/../../vendor/thecodingmachine/safe/generated/functionsList.php';
-            } else {
-                throw new \RuntimeException('Could not find thecodingmachine/safe\'s functionsList.php file.');
-            }
-            // Let's index these functions by their name
-            self::$functions = \Safe\array_combine($functions, $functions);
+        return self::$functions ??= self::fetchIndexedFunctions();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function fetchIndexedFunctions(): array
+    {
+        if (\file_exists(__DIR__ . '/../../../safe/generated/functionsList.php')) {
+            $functions = require __DIR__ . '/../../../safe/generated/functionsList.php';
+        } elseif (\file_exists(__DIR__ . '/../../vendor/thecodingmachine/safe/generated/functionsList.php')) {
+            $functions = require __DIR__ . '/../../vendor/thecodingmachine/safe/generated/functionsList.php';
+        } else {
+            throw new \RuntimeException('Could not find thecodingmachine/safe\'s functionsList.php file.');
         }
-        return self::$functions;
+
+        if (!is_array($functions)) {
+            throw new \RuntimeException('The functions list should be an array.');
+        }
+
+        $indexedFunctions = [];
+
+        foreach ($functions as $function) {
+            if (!is_string($function)) {
+                throw new \RuntimeException('The functions list should contain only strings, got ' . get_debug_type($function));
+            }
+
+            // Let's index these functions by their name
+            $indexedFunctions[$function] = $function;
+        }
+        
+        return $indexedFunctions;
     }
 }
