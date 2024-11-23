@@ -35,7 +35,6 @@ class UseSafeFunctionsRule implements Rule
         if (isset($unsafeFunctions[$functionName])) {
             if ($functionName === "json_decode" || $functionName === "json_encode") {
                 foreach ($node->args as $arg) {
-                    // Named argument might be not place on exact "documented" position
                     if ($arg->name instanceof Node\Identifier && $arg->name->toLowerString() === "flags") {
                         if ($this->argValueIncludeJSONTHROWONERROR($arg)) {
                             return [];
