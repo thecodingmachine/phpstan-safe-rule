@@ -3,6 +3,7 @@
 
 namespace TheCodingMachine\Safe\PHPStan\Type\Php;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
@@ -35,7 +36,12 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
     ): Type {
         $type = $this->getPreliminarilyResolvedTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 
-        $possibleTypes = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants())->getReturnType();
+        $possibleTypes = ParametersAcceptorSelector::selectFromArgs(
+            $scope,
+            $functionCall->getArgs(),
+            $functionReflection->getVariants()
+        )
+            ->getReturnType();
 
         if (TypeCombinator::containsNull($possibleTypes)) {
             $type = TypeCombinator::addNull($type);
@@ -50,28 +56,36 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         Scope $scope
     ): Type {
         $argumentPosition = $this->functions[$functionReflection->getName()];
+        $defaultReturnType = ParametersAcceptorSelector::selectFromArgs(
+            $scope,
+            $functionCall->getArgs(),
+            $functionReflection->getVariants()
+        )
+            ->getReturnType();
+        
         if (count($functionCall->args) <= $argumentPosition) {
-            return ParametersAcceptorSelector::selectSingle($functionReflection->getVariants())->getReturnType();
+            return $defaultReturnType;
         }
 
-        $subjectArgumentType = $scope->getType($functionCall->args[$argumentPosition]->value);
-        $defaultReturnType = ParametersAcceptorSelector::selectSingle($functionReflection->getVariants())->getReturnType();
-        if ($subjectArgumentType instanceof MixedType) {
+        $subjectArgument = $functionCall->args[$argumentPosition];
+        if (!$subjectArgument instanceof Arg) {
+            return $defaultReturnType;
+        }
+        
+        $subjectArgumentType = $scope->getType($subjectArgument->value);
+        $mixedType = new MixedType();
+        if ($subjectArgumentType->isSuperTypeOf($mixedType)->yes()) {
             return TypeUtils::toBenevolentUnion($defaultReturnType);
         }
-        $stringType = new StringType();
-        $arrayType = new ArrayType(new MixedType(), new MixedType());
 
-        $isStringSuperType = $stringType->isSuperTypeOf($subjectArgumentType);
-        $isArraySuperType = $arrayType->isSuperTypeOf($subjectArgumentType);
-        $compareSuperTypes = $isStringSuperType->compareTo($isArraySuperType);
-        if ($compareSuperTypes === $isStringSuperType) {
+        $stringType = new StringType();
+        if ($stringType->isSuperTypeOf($subjectArgumentType)->yes()) {
             return $stringType;
-        } elseif ($compareSuperTypes === $isArraySuperType) {
-            if ($subjectArgumentType instanceof ArrayType) {
-                return $subjectArgumentType->generalizeValues();
-            }
-            return $subjectArgumentType;
+        }
+
+        $arrayType = new ArrayType($mixedType, $mixedType);
+        if ($arrayType->isSuperTypeOf($subjectArgumentType)->yes()) {
+            return $arrayType;
         }
 
         return $defaultReturnType;
