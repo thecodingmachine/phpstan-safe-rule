@@ -2,6 +2,9 @@ parameters:
     level: max
     paths:
         - src
+        - tests
+    excludePaths:
+        - tests/Rules/data
     ignoreErrors:
         -
             message: '#^Implementing PHPStan\\Rules\\IdentifierRuleError is not covered by backward compatibility promise\. The interface might change in a minor PHPStan version\.$#'

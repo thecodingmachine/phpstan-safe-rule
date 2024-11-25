@@ -2,17 +2,20 @@
 
 namespace TheCodingMachine\Safe\PHPStan\Rules;
 
+use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
-use TheCodingMachine\Safe\PHPStan\Type\Php\ReplaceSafeFunctionsDynamicReturnTypeExtension;
 
+/**
+ * @template-extends RuleTestCase<UseSafeFunctionsRule>
+ */
 class UseSafeFunctionsRuleTest extends RuleTestCase
 {
-    protected function getRule(): \PHPStan\Rules\Rule
+    protected function getRule(): Rule
     {
         return new UseSafeFunctionsRule();
     }
 
-    public function testCatch()
+    public function testCatch(): void
     {
         $this->analyse([__DIR__ . '/data/fopen.php'], [
             [
@@ -22,31 +25,23 @@ class UseSafeFunctionsRuleTest extends RuleTestCase
         ]);
     }
 
-    public function testNoCatchSafe()
+    public function testNoCatchSafe(): void
     {
         $this->analyse([__DIR__ . '/data/safe_fopen.php'], []);
     }
 
-    public function testExprCall()
+    public function testExprCall(): void
     {
         $this->analyse([__DIR__ . '/data/undirect_call.php'], []);
     }
 
-    public function testJSONDecodeNoCatchSafe()
+    public function testJSONDecodeNoCatchSafe(): void
     {
-        if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-            $this->analyse([__DIR__ . '/data/safe_json_decode_for_7.3.0.php'], []);
-        } else {
-            $this->assertTrue(true);
-        }
+        $this->analyse([__DIR__ . '/data/safe_json_decode_for_7.3.0.php'], []);
     }
 
-    public function testJSONEncodeNoCatchSafe()
+    public function testJSONEncodeNoCatchSafe(): void
     {
-        if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-            $this->analyse([__DIR__ . '/data/safe_json_encode_for_7.3.0.php'], []);
-        } else {
-            $this->assertTrue(true);
-        }
+        $this->analyse([__DIR__ . '/data/safe_json_encode_for_7.3.0.php'], []);
     }
 }
