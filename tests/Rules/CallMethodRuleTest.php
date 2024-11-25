@@ -14,6 +14,9 @@ use PHPStan\Rules\RuleLevelHelper;
 use PHPStan\Testing\RuleTestCase;
 use TheCodingMachine\Safe\PHPStan\Type\Php\ReplaceSafeFunctionsDynamicReturnTypeExtension;
 
+/**
+ * @template-extends RuleTestCase<CallMethodsRule>
+ */
 class CallMethodRuleTest extends RuleTestCase
 {
     protected function getRule(): Rule
