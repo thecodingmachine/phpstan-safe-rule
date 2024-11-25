@@ -24,6 +24,9 @@
     <include>
       <directory suffix=".php">./src</directory>
     </include>
+    <exclude>
+      <file>src/Type/Php/ReplaceSafeFunctionsDynamicReturnTypeExtension.php</file>
+    </exclude>
     <report>
       <clover outputFile="build/logs/clover.xml"/>
       <html outputDirectory="build/coverage"/>

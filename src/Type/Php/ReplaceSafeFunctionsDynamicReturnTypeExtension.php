@@ -20,7 +20,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
 {
 
     /** @var array<string, int> */
-    private $functions = [
+    private array $functions = [
         'Safe\preg_replace' => 2,
     ];
 
