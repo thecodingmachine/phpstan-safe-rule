@@ -2,17 +2,20 @@
 
 namespace TheCodingMachine\Safe\PHPStan\Rules;
 
+use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
-use TheCodingMachine\Safe\PHPStan\Type\Php\ReplaceSafeFunctionsDynamicReturnTypeExtension;
 
+/**
+ * @template-extends RuleTestCase<UseSafeClassesRule>
+ */
 class UseSafeClassesRuleTest extends RuleTestCase
 {
-    protected function getRule(): \PHPStan\Rules\Rule
+    protected function getRule(): Rule
     {
         return new UseSafeClassesRule();
     }
 
-    public function testDateTime()
+    public function testDateTime(): void
     {
         $this->analyse([__DIR__ . '/data/datetime.php'], [
             [
