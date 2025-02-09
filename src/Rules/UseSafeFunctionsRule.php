@@ -33,15 +33,13 @@ class UseSafeFunctionsRule implements Rule
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
-            if (
-                $functionName === "json_decode"
+            if ($functionName === "json_decode"
                 && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[3] ?? null)
             ) {
                 return [];
             }
 
-            if (
-                $functionName === "json_encode"
+            if ($functionName === "json_encode"
                 && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[1] ?? null)
             ) {
                 return [];
