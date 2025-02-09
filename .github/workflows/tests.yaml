@@ -10,21 +10,19 @@ on:
 
 jobs:
   Tests:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     strategy:
       matrix:
         php:
-          - '7.4'
-          - '8.0'
-          - '8.1'
-          - '8.2'
-          - '8.3'
-          - '8.4'
-        dependencies: ['highest']
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+        dependencies: ["highest"]
         include:
-          - description: '(lowest)'
-            php: '7.4'
-            dependencies: 'lowest'
+          - description: "(lowest)"
+            php: "8.1"
+            dependencies: "lowest"
 
     name: PHP ${{ matrix.php }} ${{ matrix.description }}
     steps:
@@ -46,7 +44,7 @@ jobs:
       - name: "Upload test coverage"
         uses: codecov/codecov-action@v5
         with:
-          files: './coverage.xml'
+          files: "./coverage.xml"
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
