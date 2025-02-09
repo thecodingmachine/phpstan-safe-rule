@@ -1,5 +1,6 @@
 <?php
-function foo() {
+function foo()
+{
     $toto = 'fopen';
     $toto('foobar', 'r');
 }

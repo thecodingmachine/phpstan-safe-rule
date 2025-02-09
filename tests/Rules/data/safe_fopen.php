@@ -1,6 +1,7 @@
 <?php
 use function Safe\fopen;
 
-function foo() {
+function foo()
+{
     $fp = fopen('foobar', 'r');
 }
