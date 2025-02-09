@@ -11,6 +11,8 @@
 
     <!-- Paths to check -->
     <file>src</file>
+    <file>tests</file>
+    <exclude-pattern>tests/**/data</exclude-pattern>
 
     <rule ref="Generic.Files.LineLength">
         <properties>
