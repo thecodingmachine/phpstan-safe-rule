@@ -18,6 +18,6 @@ class SafeFunctionRuleError extends SafeRuleError
 
     public function getIdentifier(): string
     {
-        return self::IDENTIFIER_PREFIX . 'class';
+        return self::IDENTIFIER_PREFIX . 'function';
     }
 }
