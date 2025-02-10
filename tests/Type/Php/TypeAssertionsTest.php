@@ -4,14 +4,16 @@ namespace TheCodingMachine\Safe\PHPStan\Type\Php;
 
 use PHPStan\Testing\TypeInferenceTestCase;
 
-class PregMatchParameterOutTypeExtensionTest extends TypeInferenceTestCase
+class TypeAssertionsTest extends TypeInferenceTestCase
 {
     /**
      * @return iterable<mixed>
      */
     public static function dataFileAsserts(): iterable
     {
-        yield from self::gatherAssertTypes(__DIR__ . '/data/preg.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_unchecked.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_checked.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_replace_return.php');
     }
 
     /**
