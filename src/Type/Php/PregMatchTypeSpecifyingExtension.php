@@ -1,5 +1,8 @@
 <?php declare(strict_types = 1);
 
+/*
+Blatantly copy-pasted from PHPStan's source code but with isFunctionSupported changed
+*/
 namespace TheCodingMachine\Safe\PHPStan\Type\Php;
 
 use PHPStan\Type\Php\RegexArrayShapeMatcher;
