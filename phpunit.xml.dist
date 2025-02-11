@@ -1,36 +1,24 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         backupGlobals="false"
-         backupStaticAttributes="false"
-         beStrictAboutChangesToGlobalState="true"
-         beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestsThatDoNotTestAnything="true"
-         beStrictAboutTodoAnnotatedTests="true"
-         failOnRisky="true"
-         failOnWarning="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" backupGlobals="false" beStrictAboutChangesToGlobalState="true" beStrictAboutOutputDuringTests="true" beStrictAboutTestsThatDoNotTestAnything="true" failOnRisky="true" failOnWarning="true" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
   <testsuites>
     <testsuite name="Test suite">
       <directory>./tests/</directory>
     </testsuite>
   </testsuites>
   <coverage>
-    <include>
-      <directory suffix=".php">./src</directory>
-    </include>
-    <exclude>
-      <file>src/Type/Php/ReplaceSafeFunctionsDynamicReturnTypeExtension.php</file>
-    </exclude>
     <report>
       <clover outputFile="build/logs/clover.xml"/>
       <html outputDirectory="build/coverage"/>
       <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="true"/>
     </report>
   </coverage>
+  <source>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <!-- type checking doesn't count towards coverage for some reason -->
+      <directory>src/Type/Php/</directory>
+    </exclude>
+  </source>
 </phpunit>
