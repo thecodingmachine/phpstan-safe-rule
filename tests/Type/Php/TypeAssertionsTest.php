@@ -13,6 +13,7 @@ class TypeAssertionsTest extends TypeInferenceTestCase
     {
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_unchecked.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_checked.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_asserted.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_replace_return.php');
     }
 
