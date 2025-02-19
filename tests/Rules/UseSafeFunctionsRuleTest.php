@@ -37,11 +37,11 @@ class UseSafeFunctionsRuleTest extends RuleTestCase
 
     public function testJSONDecodeNoCatchSafe(): void
     {
-        $this->analyse([__DIR__ . '/data/safe_json_decode_for_7.3.0.php'], []);
+        $this->analyse([__DIR__ . '/data/safe_json_decode.php'], []);
     }
 
     public function testJSONEncodeNoCatchSafe(): void
     {
-        $this->analyse([__DIR__ . '/data/safe_json_encode_for_7.3.0.php'], []);
+        $this->analyse([__DIR__ . '/data/safe_json_encode.php'], []);
     }
 }
