@@ -7,6 +7,3 @@ json_encode([], JSON_FORCE_OBJECT | JSON_INVALID_UTF8_IGNORE | JSON_THROW_ON_ERR
 
 // Named arguments
 json_encode([], flags: JSON_THROW_ON_ERROR);
-
-// First class callable
-json_encode(...);
