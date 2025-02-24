@@ -94,10 +94,16 @@ class UseSafeFunctionsRule implements Rule
             return true;
         }
 
-        return in_array(true, array_map(function ($element) {
-            return ($element & self::JSON_THROW_ON_ERROR) == self::JSON_THROW_ON_ERROR;
-        }, array_filter($options, function ($element) {
-            return is_int($element);
-        })), true);
+        $intOptions = array_filter($options, function (mixed $option): bool {
+            return is_int($option);
+        });
+
+        foreach ($intOptions as $option) {
+            if (($option & self::JSON_THROW_ON_ERROR) === self::JSON_THROW_ON_ERROR) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
