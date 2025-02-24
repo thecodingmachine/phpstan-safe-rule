@@ -11,3 +11,11 @@ services:
     class: TheCodingMachine\Safe\PHPStan\Type\Php\ReplaceSafeFunctionsDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicFunctionReturnTypeExtension
+  -
+    class: TheCodingMachine\Safe\PHPStan\Type\Php\PregMatchParameterOutTypeExtension
+    tags:
+      - phpstan.functionParameterOutTypeExtension
+  -
+    class: TheCodingMachine\Safe\PHPStan\Type\Php\PregMatchTypeSpecifyingExtension
+    tags:
+      - phpstan.typeSpecifier.functionTypeSpecifyingExtension
