@@ -45,8 +45,7 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
         $matchesArg = $args[2] ?? null;
         $flagsArg = $args[3] ?? null;
 
-        if ($patternArg === null || $matchesArg === null
-        ) {
+        if ($patternArg === null || $matchesArg === null) {
             return new SpecifiedTypes();
         }
 
@@ -55,10 +54,17 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
             $flagsType = $scope->getType($flagsArg->value);
         }
 
+        // 检查是否是直接比较返回值
+        $isDirectComparison = false;
+        $parent = $node->getAttribute('parentNode');
+        if ($parent instanceof \PhpParser\Node\Expr\BinaryOp\Identical) {
+            $isDirectComparison = true;
+        }
+
         if ($functionReflection->getName() === 'Safe\preg_match') {
-            $matchedType = $this->regexShapeMatcher->matchExpr($patternArg->value, $flagsType, TrinaryLogic::createFromBoolean($context->true()), $scope);
+            $matchedType = $this->regexShapeMatcher->matchExpr($patternArg->value, $flagsType, TrinaryLogic::createFromBoolean($context->true() || $isDirectComparison), $scope);
         } else {
-            $matchedType = $this->regexShapeMatcher->matchAllExpr($patternArg->value, $flagsType, TrinaryLogic::createFromBoolean($context->true()), $scope);
+            $matchedType = $this->regexShapeMatcher->matchAllExpr($patternArg->value, $flagsType, TrinaryLogic::createFromBoolean($context->true() || $isDirectComparison), $scope);
         }
         if ($matchedType === null) {
             return new SpecifiedTypes();
@@ -76,6 +82,7 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
             $context,
             $scope,
         )->setRootExpr($node);
+
         if ($overwrite) {
             $types = $types->setAlwaysOverwriteTypes();
         }
