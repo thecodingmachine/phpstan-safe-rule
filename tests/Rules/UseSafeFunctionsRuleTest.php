@@ -22,6 +22,14 @@ class UseSafeFunctionsRuleTest extends RuleTestCase
                 "Function fopen is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\fopen;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
                 3,
             ],
+            [
+                "Function json_decode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_decode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
+                4,
+            ],
+            [
+                "Function json_encode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_encode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
+                5,
+            ],
         ]);
     }
 
