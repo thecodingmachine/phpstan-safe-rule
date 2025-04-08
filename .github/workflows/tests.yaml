@@ -18,7 +18,8 @@ jobs:
           - "8.2"
           - "8.3"
           - "8.4"
-        dependencies: ["highest"]
+        dependencies:
+          - "highest"
         include:
           - description: "(lowest)"
             php: "8.1"
@@ -44,7 +45,7 @@ jobs:
       - name: "Upload test coverage"
         uses: codecov/codecov-action@v5
         with:
-          files: "./coverage.xml"
+          files: coverage.xml
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
