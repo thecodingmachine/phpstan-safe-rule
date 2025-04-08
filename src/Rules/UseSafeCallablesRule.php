@@ -28,15 +28,15 @@ class UseSafeCallablesRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        $name = $node->getName();
-        if (!$name instanceof Node\Name) {
+        $nodeName = $node->getName();
+        if (!$nodeName instanceof Node\Name) {
             return [];
         }
-        $functionName = $name->toString();
+        $functionName = $nodeName->toString();
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
-            return [new SafeFunctionRuleError($name, $node->getStartLine())];
+            return [new SafeFunctionRuleError($nodeName, $node->getStartLine())];
         }
 
         return [];

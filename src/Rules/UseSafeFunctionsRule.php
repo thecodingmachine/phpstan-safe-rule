@@ -30,11 +30,11 @@ class UseSafeFunctionsRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        $name = $node->name;
-        if (!$name instanceof Node\Name) {
+        $nodeName = $node->name;
+        if (!$nodeName instanceof Node\Name) {
             return [];
         }
-        $functionName = $name->toString();
+        $functionName = $nodeName->toString();
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
@@ -63,7 +63,7 @@ class UseSafeFunctionsRule implements Rule
                 return [];
             }
 
-            return [new SafeFunctionRuleError($name, $node->getStartLine())];
+            return [new SafeFunctionRuleError($nodeName, $node->getStartLine())];
         }
 
         return [];
