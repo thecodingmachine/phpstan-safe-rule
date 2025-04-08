@@ -4,7 +4,9 @@ parameters:
         - src
         - tests
     excludePaths:
-        - tests/Rules/data
+        - tests/Rules/UseSafeCallablesRule
+        - tests/Rules/UseSafeClassesRule
+        - tests/Rules/UseSafeFunctionsRule
     ignoreErrors:
         -
             message: '#^Implementing PHPStan\\Rules\\IdentifierRuleError is not covered by backward compatibility promise\. The interface might change in a minor PHPStan version\.$#'
