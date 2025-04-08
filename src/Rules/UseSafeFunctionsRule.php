@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TheCodingMachine\Safe\PHPStan\Rules;
 
 use PhpParser\Node;
@@ -31,41 +30,40 @@ class UseSafeFunctionsRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node->name instanceof Node\Name) {
+        $name = $node->name;
+        if (!$name instanceof Node\Name) {
             return [];
         }
-        $functionName = $node->name->toString();
+        $functionName = $name->toString();
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
-            if (! $node->isFirstClassCallable()) {
-                if ($functionName === "json_decode" || $functionName === "json_encode") {
-                    foreach ($node->args as $arg) {
-                        if ($arg instanceof Node\Arg &&
-                            $arg->name instanceof Node\Identifier &&
-                            $arg->name->toLowerString() === "flags"
-                        ) {
-                            if ($this->argValueIncludeJSONTHROWONERROR($arg)) {
-                                return [];
-                            }
+            if ($functionName === "json_decode" || $functionName === "json_encode") {
+                foreach ($node->args as $arg) {
+                    if ($arg instanceof Node\Arg &&
+                        $arg->name instanceof Node\Identifier &&
+                        $arg->name->toLowerString() === "flags"
+                    ) {
+                        if ($this->argValueIncludeJSONTHROWONERROR($arg)) {
+                            return [];
                         }
                     }
                 }
-
-                if ($functionName === "json_decode"
-                    && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[3] ?? null)
-                ) {
-                    return [];
-                }
-
-                if ($functionName === "json_encode"
-                    && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[1] ?? null)
-                ) {
-                    return [];
-                }
             }
 
-            return [new SafeFunctionRuleError($node->name, $node->getStartLine())];
+            if ($functionName === "json_decode"
+                && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[3] ?? null)
+            ) {
+                return [];
+            }
+
+            if ($functionName === "json_encode"
+                && $this->argValueIncludeJSONTHROWONERROR($node->getArgs()[1] ?? null)
+            ) {
+                return [];
+            }
+
+            return [new SafeFunctionRuleError($name, $node->getStartLine())];
         }
 
         return [];

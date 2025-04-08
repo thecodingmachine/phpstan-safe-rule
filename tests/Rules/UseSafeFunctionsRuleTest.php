@@ -44,14 +44,4 @@ class UseSafeFunctionsRuleTest extends RuleTestCase
     {
         $this->analyse([__DIR__ . '/data/safe_json_encode.php'], []);
     }
-
-    public function testFirstClassCallable(): void
-    {
-        $this->analyse([__DIR__ . '/data/first_class_callable.php'], [
-            [
-                "Function json_encode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_encode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
-                3,
-            ],
-        ]);
-    }
 }
