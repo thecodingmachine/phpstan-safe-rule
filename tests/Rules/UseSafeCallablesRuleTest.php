@@ -15,13 +15,28 @@ class UseSafeCallablesRuleTest extends RuleTestCase
         return new UseSafeCallablesRule();
     }
 
-    public function testFirstClassCallable(): void
+    public function testUnsafe(): void
     {
-        $this->analyse([__DIR__ . '/data/first_class_callable.php'], [
+        $this->analyse([__DIR__ . '/UseSafeCallables/unsafe.php'], [
             [
                 "Function json_encode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_encode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
                 3,
             ],
         ]);
+    }
+
+    public function testUseSafe(): void
+    {
+        $this->analyse([__DIR__ . '/UseSafeCallables/use_safe.php'], []);
+    }
+
+    public function testNativeSafe(): void
+    {
+        $this->analyse([__DIR__ . '/UseSafeCallables/native_safe.php'], []);
+    }
+
+    public function testExpr(): void
+    {
+        $this->analyse([__DIR__ . '/UseSafeCallables/expr.php'], []);
     }
 }

@@ -1,0 +1,3 @@
+<?php
+
+fopen('foobar', 'r');
