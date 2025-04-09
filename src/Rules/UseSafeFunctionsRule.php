@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TheCodingMachine\Safe\PHPStan\Rules;
 
 use PhpParser\Node;
@@ -19,6 +18,11 @@ use TheCodingMachine\Safe\PHPStan\Utils\FunctionListLoader;
  */
 class UseSafeFunctionsRule implements Rule
 {
+    /**
+     * @see JSON_THROW_ON_ERROR
+     */
+    const JSON_THROW_ON_ERROR = 4194304;
+
     public function getNodeType(): string
     {
         return Node\Expr\FuncCall::class;
@@ -26,10 +30,11 @@ class UseSafeFunctionsRule implements Rule
 
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node->name instanceof Node\Name) {
+        $nodeName = $node->name;
+        if (!$nodeName instanceof Node\Name) {
             return [];
         }
-        $functionName = $node->name->toString();
+        $functionName = $nodeName->toString();
         $unsafeFunctions = FunctionListLoader::getFunctionList();
 
         if (isset($unsafeFunctions[$functionName])) {
@@ -58,7 +63,7 @@ class UseSafeFunctionsRule implements Rule
                 return [];
             }
 
-            return [new SafeFunctionRuleError($node->name, $node->getStartLine())];
+            return [new SafeFunctionRuleError($nodeName, $node->getStartLine())];
         }
 
         return [];
@@ -87,11 +92,16 @@ class UseSafeFunctionsRule implements Rule
             return true;
         }
 
-        return in_array(true, array_map(function ($element) {
-            // JSON_THROW_ON_ERROR == 4194304
-            return ($element & 4194304) == 4194304;
-        }, array_filter($options, function ($element) {
-            return is_int($element);
-        })), true);
+        $intOptions = array_filter($options, function (mixed $option): bool {
+            return is_int($option);
+        });
+
+        foreach ($intOptions as $option) {
+            if (($option & self::JSON_THROW_ON_ERROR) === self::JSON_THROW_ON_ERROR) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

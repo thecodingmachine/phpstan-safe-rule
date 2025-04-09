@@ -15,33 +15,36 @@ class UseSafeFunctionsRuleTest extends RuleTestCase
         return new UseSafeFunctionsRule();
     }
 
-    public function testCatch(): void
+    public function testUnsafe(): void
     {
-        $this->analyse([__DIR__ . '/data/fopen.php'], [
+        $this->analyse([__DIR__ . '/UseSafeFunctionsRule/unsafe.php'], [
             [
                 "Function fopen is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\fopen;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
+                3,
+            ],
+            [
+                "Function json_decode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_decode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
                 4,
+            ],
+            [
+                "Function json_encode is unsafe to use. It can return FALSE instead of throwing an exception. Please add 'use function Safe\\json_encode;' at the beginning of the file to use the variant provided by the 'thecodingmachine/safe' library.",
+                5,
             ],
         ]);
     }
 
-    public function testNoCatchSafe(): void
+    public function testUseSafe(): void
     {
-        $this->analyse([__DIR__ . '/data/safe_fopen.php'], []);
+        $this->analyse([__DIR__ . '/UseSafeFunctionsRule/use_safe.php'], []);
     }
 
-    public function testExprCall(): void
+    public function testNativeSafe(): void
     {
-        $this->analyse([__DIR__ . '/data/undirect_call.php'], []);
+        $this->analyse([__DIR__ . '/UseSafeFunctionsRule/native_safe.php'], []);
     }
 
-    public function testJSONDecodeNoCatchSafe(): void
+    public function testExpr(): void
     {
-        $this->analyse([__DIR__ . '/data/safe_json_decode.php'], []);
-    }
-
-    public function testJSONEncodeNoCatchSafe(): void
-    {
-        $this->analyse([__DIR__ . '/data/safe_json_encode.php'], []);
+        $this->analyse([__DIR__ . '/UseSafeFunctionsRule/expr.php'], []);
     }
 }
