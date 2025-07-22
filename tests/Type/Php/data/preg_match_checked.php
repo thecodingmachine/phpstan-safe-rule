@@ -12,9 +12,9 @@ $type = "array{0: non-falsy-string, 1: non-empty-string, 2: 'o', 3?: 'World'}";
 
 // @phpstan-ignore-next-line - use of unsafe is intentional
 if(\preg_match($pattern, $string, $matches)) {
-    \PHPStan\Testing\assertType($type, $matches);
+    \PHPStan\Testing\assertSuperType($type, $matches);
 }
 
 if(\Safe\preg_match($pattern, $string, $matches)) {
-    \PHPStan\Testing\assertType($type, $matches);
+    \PHPStan\Testing\assertSuperType($type, $matches);
 }
