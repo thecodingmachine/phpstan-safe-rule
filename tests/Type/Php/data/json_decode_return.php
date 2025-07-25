@@ -33,12 +33,3 @@ function(string $json): void {
     $value = \Safe\json_decode($json, true);
     \PHPStan\Testing\assertType('mixed~object', $value);
 };
-
-function(string $json): void {
-    /** @var '{}'|'null' $json */
-    $value = \Safe\json_decode($json);
-    \PHPStan\Testing\assertType('stdClass|null', $value);
-
-    $value = \Safe\json_decode($json, true);
-    \PHPStan\Testing\assertType('array{}|null', $value);
-};

@@ -26,7 +26,7 @@ parameters:
             count: 1
             path: src/Rules/Error/SafeRuleError.php
         -
-            message: '#^Calling PHPStan\\Type\\BitwiseFlagHelper::bitwiseOrContainsConstant\(\) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version\.$#'
+            message: '#^Calling PHPStan\\Type\\Php\\JsonThrowOnErrorDynamicReturnTypeExtension\:\:getTypeFromFunctionCall\(\) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version\.$#'
             identifier: phpstanApi.method
             count: 1
             path: src/Type/Php/JsonDecodeDynamicReturnTypeExtension.php
