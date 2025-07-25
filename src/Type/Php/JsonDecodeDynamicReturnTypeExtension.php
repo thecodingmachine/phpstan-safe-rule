@@ -18,10 +18,13 @@ use PHPStan\Type\Type;
  */
 final class JsonDecodeDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
+    private FunctionReflection $nativeJsonDecodeReflection;
+
     public function __construct(
         private readonly JsonThrowOnErrorDynamicReturnTypeExtension $phpstanCheck,
-        private readonly ReflectionProvider $reflectionProvider,
+        ReflectionProvider $reflectionProvider,
     ) {
+        $this->nativeJsonDecodeReflection = $reflectionProvider->getFunction(new Name('json_decode'), null);
     }
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
@@ -31,8 +34,7 @@ final class JsonDecodeDynamicReturnTypeExtension implements DynamicFunctionRetur
 
     public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): Type
     {
-        $functionReflection = $this->reflectionProvider->getFunction(new Name('json_decode'), null);
-        $result = $this->phpstanCheck->getTypeFromFunctionCall($functionReflection, $functionCall, $scope);
+        $result = $this->phpstanCheck->getTypeFromFunctionCall($this->nativeJsonDecodeReflection, $functionCall, $scope);
 
         // if PHPStan reports null and there is a json error, then an invalid constant string was passed
         if ($result->isNull()->yes() && JSON_ERROR_NONE !== json_last_error()) {
