@@ -23,3 +23,7 @@ services:
     class: TheCodingMachine\Safe\PHPStan\Type\Php\PregMatchTypeSpecifyingExtension
     tags:
       - phpstan.typeSpecifier.functionTypeSpecifyingExtension
+  -
+      class: TheCodingMachine\Safe\PHPStan\Type\Php\JsonDecodeDynamicReturnTypeExtension
+      tags:
+        - phpstan.broker.dynamicFunctionReturnTypeExtension
