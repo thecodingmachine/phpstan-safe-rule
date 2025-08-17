@@ -11,7 +11,7 @@ $type = "array{0?: string, 1?: non-empty-string, 2?: 'o', 3?: 'World'}";
 
 // @phpstan-ignore-next-line - use of unsafe is intentional
 \preg_match($pattern, $string, $matches);
-\PHPStan\Testing\assertType($type, $matches);
+\PHPStan\Testing\assertSuperType($type, $matches);
 
 \Safe\preg_match($pattern, $string, $matches);
-\PHPStan\Testing\assertType($type, $matches);
+\PHPStan\Testing\assertSuperType($type, $matches);

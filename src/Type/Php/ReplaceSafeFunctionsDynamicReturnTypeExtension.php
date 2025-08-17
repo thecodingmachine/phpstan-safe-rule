@@ -16,12 +16,19 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeUtils;
 
+/**
+ * This file has been copy-pasted from PHPStan's source code but with isFunctionSupported changed.
+ * For now, only preg_* functions are supported.
+ * @See https://github.com/phpstan/phpstan-src/blob/2.1.x/src/Type/Php/ReplaceFunctionsDynamicReturnTypeExtension.php
+ */
 class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-    /** @var array<string, int> */
+    /** @var array<string, int> The function name associated with the typed argument position used to type the return */
     private array $functions = [
         'Safe\preg_replace' => 2,
+        'Safe\preg_replace_callback' => 2,
+        'Safe\preg_replace_callback_array' => 1,
     ];
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
