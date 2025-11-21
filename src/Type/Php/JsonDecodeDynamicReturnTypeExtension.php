@@ -33,7 +33,7 @@ final class JsonDecodeDynamicReturnTypeExtension implements DynamicFunctionRetur
 
     public function getTypeFromFunctionCall(FunctionReflection $functionReflection, FuncCall $functionCall, Scope $scope): Type
     {
-        // trigger reflection processing lazily
+        // trigger reflection processing lazily.
         if ($this->nativeJsonDecodeReflection === null) {
             $this->nativeJsonDecodeReflection = $this->reflectionProvider->getFunction(new Name('json_decode'), null);
         }
