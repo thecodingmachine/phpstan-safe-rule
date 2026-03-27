@@ -15,6 +15,7 @@ class TypeAssertionsTest extends TypeInferenceTestCase
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_checked.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_replace_return.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/json_decode_return.php');
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_identity_check.php');
     }
 
     /**
