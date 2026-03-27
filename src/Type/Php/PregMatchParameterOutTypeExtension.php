@@ -13,8 +13,10 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\TrinaryLogic;
+use PHPStan\Type\Constant\ConstantArrayTypeBuilder;
 use PHPStan\Type\FunctionParameterOutTypeExtension;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use function in_array;
 
 final class PregMatchParameterOutTypeExtension implements FunctionParameterOutTypeExtension
@@ -50,7 +52,14 @@ final class PregMatchParameterOutTypeExtension implements FunctionParameterOutTy
         }
 
         if ($functionReflection->getName() === 'Safe\preg_match') {
-            return $this->regexShapeMatcher->matchExpr($patternArg->value, $flagsType, TrinaryLogic::createMaybe(), $scope);
+            $matchedType = $this->regexShapeMatcher->matchExpr($patternArg->value, $flagsType, TrinaryLogic::createYes(), $scope);
+            if ($matchedType === null) {
+                return null;
+            }
+            return TypeCombinator::union(
+                ConstantArrayTypeBuilder::createEmpty()->getArray(),
+                $matchedType,
+            );
         }
         return $this->regexShapeMatcher->matchAllExpr($patternArg->value, $flagsType, TrinaryLogic::createMaybe(), $scope);
     }
