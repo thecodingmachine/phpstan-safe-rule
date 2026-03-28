@@ -7,19 +7,20 @@ parameters:
         - tests/Rules/UseSafeCallablesRule
         - tests/Rules/UseSafeClassesRule
         - tests/Rules/UseSafeFunctionsRule
+        - tests/Type/Php/data
     ignoreErrors:
         -
             message: '#^Implementing PHPStan\\Rules\\IdentifierRuleError is not covered by backward compatibility promise\. The interface might change in a minor PHPStan version\.$#'
             identifier: phpstanApi.interface
             count: 1
             path: src/Rules/Error/SafeRuleError.php
-    
+
         -
             message: '#^Implementing PHPStan\\Rules\\LineRuleError is not covered by backward compatibility promise\. The interface might change in a minor PHPStan version\.$#'
             identifier: phpstanApi.interface
             count: 1
             path: src/Rules/Error/SafeRuleError.php
-    
+
         -
             message: '#^Implementing PHPStan\\Rules\\RuleError is not covered by backward compatibility promise\. The interface might change in a minor PHPStan version\.$#'
             identifier: phpstanApi.interface
