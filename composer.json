@@ -1,4 +1,5 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "thecodingmachine/phpstan-safe-rule",
     "description": "A PHPStan rule to detect safety issues. Must be used in conjunction with thecodingmachine/safe",
     "type": "phpstan-extension",
@@ -11,8 +12,8 @@
     ],
     "require": {
         "php": "^8.1",
-        "phpstan/phpstan": "^2.1.11",
-        "thecodingmachine/safe": "^1.2 || ^2.0 || ^3.0",
+        "phpstan/phpstan": "^2.1.30",
+        "thecodingmachine/safe": "^3.1",
         "nikic/php-parser": "^5"
     },
     "require-dev": {
@@ -31,7 +32,7 @@
         }
     },
     "scripts": {
-        "phpstan": "phpstan analyse -c phpstan.neon --no-progress -vvv",
+        "phpstan": "phpstan analyse -c phpstan.neon --no-progress -vv",
         "test": "XDEBUG_MODE=coverage phpunit",
         "cs-fix": "phpcbf",
         "cs-check": "phpcs"

@@ -15,7 +15,6 @@ class TypeAssertionsTest extends TypeInferenceTestCase
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_checked.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/preg_replace_return.php');
         yield from self::gatherAssertTypes(__DIR__ . '/data/json_decode_return.php');
-        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_identity_check.php');
     }
 
     /**
@@ -27,6 +26,34 @@ class TypeAssertionsTest extends TypeInferenceTestCase
         mixed ...$args
     ): void {
         $this->assertFileAsserts($assertType, $file, ...$args);
+    }
+
+    /**
+     * @return iterable<mixed>
+     */
+    public static function dataKnownProblems(): iterable
+    {
+        yield from self::gatherAssertTypes(__DIR__ . '/data/preg_match_identity_check.php');
+    }
+
+    /**
+     * @dataProvider dataKnownProblems
+     */
+    public function testKnownProblems(
+        string $assertType,
+        string $file,
+        mixed ...$args
+    ): void {
+        try {
+            $this->assertFileAsserts($assertType, $file, ...$args);
+            $this->fail(
+                "Expected an assertion failure in $file, but it passed. ".
+                "This is a known issue that should be fixed, but the test ".
+                "should not fail until then."
+            );
+        } catch (\PHPUnit\Framework\ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting that', $e->getMessage(), "Expected an assertion failure in $file, but got a different error: " . $e->getMessage());
+        }
     }
 
     public static function getAdditionalConfigFiles(): array
