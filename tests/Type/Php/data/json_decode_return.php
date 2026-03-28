@@ -1,4 +1,7 @@
 <?php
+
+namespace TheCodingMachine\Safe\PHPStan\Type\Php\data;
+
 $value = \Safe\json_decode('null');
 \PHPStan\Testing\assertType('null', $value);
 
