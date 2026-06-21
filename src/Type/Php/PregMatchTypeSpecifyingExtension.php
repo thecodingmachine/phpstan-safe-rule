@@ -42,12 +42,32 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
     {
         $args = $node->getArgs();
         $patternArg = $args[0] ?? null;
+        $subjectArg = $args[1] ?? null;
         $matchesArg = $args[2] ?? null;
         $flagsArg = $args[3] ?? null;
 
-        if ($patternArg === null || $matchesArg === null
+        $subjectTypes = new SpecifiedTypes();
+        if ($patternArg === null) {
+            return $subjectTypes;
+        }
+
+        if ($subjectArg !== null
+            && $context->true()
+            && $scope->getType($subjectArg->value)->isString()->yes()
         ) {
-            return new SpecifiedTypes();
+            $subjectType = $this->regexShapeMatcher->matchSubjectExpr($patternArg->value, $scope);
+            if ($subjectType !== null) {
+                $subjectTypes = $this->typeSpecifier->create(
+                    $subjectArg->value,
+                    $subjectType,
+                    $context,
+                    $scope,
+                )->setRootExpr($node);
+            }
+        }
+
+        if ($matchesArg === null) {
+            return $subjectTypes;
         }
 
         $flagsType = null;
@@ -69,7 +89,7 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
             $matchedType = $this->regexShapeMatcher->matchAllExpr($patternArg->value, $flagsType, $wasMatched, $scope);
         }
         if ($matchedType === null) {
-            return new SpecifiedTypes();
+            return $subjectTypes;
         }
 
         $overwrite = false;
@@ -88,6 +108,6 @@ final class PregMatchTypeSpecifyingExtension implements FunctionTypeSpecifyingEx
             $types = $types->setAlwaysOverwriteTypes();
         }
 
-        return $types;
+        return $subjectTypes->unionWith($types);
     }
 }

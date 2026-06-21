@@ -18,3 +18,9 @@ if(\preg_match($pattern, $string, $matches)) {
 if(\Safe\preg_match($pattern, $string, $matches)) {
     \PHPStan\Testing\assertType($type, $matches);
 }
+
+function doFoo(string $string) {
+    if(\Safe\preg_match('/Price: /i', $string)) {
+        \PHPStan\Testing\assertType('non-falsy-string', $string);
+    }
+}
