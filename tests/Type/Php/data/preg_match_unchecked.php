@@ -7,11 +7,11 @@ $pattern = '/H(.)ll(o) (World)?/';
 $string = 'Hello World';
 
 // when return value isn't checked, we may-or-may-not have matches
-$type = "list{0?: string, 1?: non-empty-string, 2?: 'o', 3?: 'World'}";
+$type = "array{}|array{0: non-falsy-string, 1: non-empty-string, 2: 'o', 3?: 'World'}";
 
 // @phpstan-ignore-next-line - use of unsafe is intentional
 \preg_match($pattern, $string, $matches);
-\PHPStan\Testing\assertSuperType($type, $matches);
+\PHPStan\Testing\assertType($type, $matches);
 
 \Safe\preg_match($pattern, $string, $matches);
-\PHPStan\Testing\assertSuperType($type, $matches);
+\PHPStan\Testing\assertType($type, $matches);

@@ -10,7 +10,7 @@ $x = \Safe\preg_replace('/foo/', 'bar', 'baz');
 
 // preg_replace with an array pattern should return an array
 $x = \Safe\preg_replace(['/foo/'], ['bar'], ['baz']);
-\PHPStan\Testing\assertType("array", $x);
+\PHPStan\Testing\assertType("array{string}", $x);
 
 // preg_replace_callback
 
@@ -20,7 +20,7 @@ $x = \Safe\preg_replace_callback('/foo/', fn (array $matches) => 'bar', 'baz');
 
 // preg_replace_callback with an array pattern should return an array
 $x = \Safe\preg_replace_callback(['/foo/'], fn (array $matches) => 'bar', ['baz']);
-\PHPStan\Testing\assertType("array", $x);
+\PHPStan\Testing\assertType("array{string}", $x);
 
 
 // preg_replace_callback_array
@@ -31,4 +31,4 @@ $x = \Safe\preg_replace_callback_array(['/foo/' => fn (array $matches) => 'bar']
 
 // preg_replace_callback with an array pattern should return an array
 $x = \Safe\preg_replace_callback_array(['/foo/' => fn (array $matches) => 'bar'], ['baz']);
-\PHPStan\Testing\assertType("array", $x);
+\PHPStan\Testing\assertType("array{string}", $x);
