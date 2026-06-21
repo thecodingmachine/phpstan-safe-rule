@@ -3,18 +3,26 @@
 
 namespace TheCodingMachine\Safe\PHPStan\Type\Php;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\ShouldNotHappenException;
+use PHPStan\Type\Accessory\AccessoryLowercaseStringType;
+use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
+use PHPStan\Type\Accessory\AccessoryNonFalsyStringType;
+use PHPStan\Type\Accessory\AccessoryUppercaseStringType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\DynamicFunctionReturnTypeExtension;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeUtils;
+use function array_key_exists;
+use function count;
+use function in_array;
 
 /**
  * This file has been copy-pasted from PHPStan's source code but with isFunctionSupported changed.
@@ -24,33 +32,40 @@ use PHPStan\Type\TypeUtils;
 class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionReturnTypeExtension
 {
 
-    /** @var array<string, int> The function name associated with the typed argument position used to type the return */
-    private array $functions = [
+    private const FUNCTIONS_SUBJECT_POSITION = [
         'Safe\preg_replace' => 2,
         'Safe\preg_replace_callback' => 2,
         'Safe\preg_replace_callback_array' => 1,
+        /*
+        'str_replace' => 2,
+        'str_ireplace' => 2,
+        'substr_replace' => 0,
+        'strtr' => 0,
+        */
+    ];
+
+    private const FUNCTIONS_REPLACE_POSITION = [
+        'preg_replace' => 1,
+        'str_replace' => 1,
+        'str_ireplace' => 1,
+        'substr_replace' => 1,
+        'strtr' => 2,
     ];
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
     {
-        return array_key_exists($functionReflection->getName(), $this->functions);
+        return array_key_exists($functionReflection->getName(), self::FUNCTIONS_SUBJECT_POSITION);
     }
 
     public function getTypeFromFunctionCall(
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
-        Scope $scope
-    ): Type {
+        Scope $scope,
+    ): ?Type
+    {
         $type = $this->getPreliminarilyResolvedTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 
-        $possibleTypes = ParametersAcceptorSelector::selectFromArgs(
-            $scope,
-            $functionCall->getArgs(),
-            $functionReflection->getVariants()
-        )
-            ->getReturnType();
-
-        if (TypeCombinator::containsNull($possibleTypes)) {
+        if ($type !== null && $this->canReturnNull($functionReflection, $functionCall, $scope)) {
             $type = TypeCombinator::addNull($type);
         }
 
@@ -60,36 +75,155 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
     private function getPreliminarilyResolvedTypeFromFunctionCall(
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
-        Scope $scope
-    ): Type {
-        $argumentPosition = $this->functions[$functionReflection->getName()];
-
+        Scope $scope,
+    ): ?Type
+    {
+        $subjectArgumentType = $this->getSubjectType($functionReflection, $functionCall, $scope);
         $args = $functionCall->getArgs();
-        $variants = $functionReflection->getVariants();
-        $defaultReturnType = ParametersAcceptorSelector::selectFromArgs($scope, $args, $variants)
-            ->getReturnType();
 
-        if (count($args) <= $argumentPosition) {
-            return $defaultReturnType;
+        if ($subjectArgumentType === null) {
+            return null;
         }
 
-        $subjectArgument = $args[$argumentPosition];
-        $subjectArgumentType = $scope->getType($subjectArgument->value);
-        $mixedType = new MixedType();
-        if ($subjectArgumentType->isSuperTypeOf($mixedType)->yes()) {
+        if ($subjectArgumentType instanceof MixedType) {
+            $defaultReturnType = ParametersAcceptorSelector::selectFromArgs(
+                $scope,
+                $args,
+                $functionReflection->getVariants(),
+            )->getReturnType();
+
             return TypeUtils::toBenevolentUnion($defaultReturnType);
         }
 
-        $stringType = new StringType();
-        if ($stringType->isSuperTypeOf($subjectArgumentType)->yes()) {
-            return $stringType;
+        $replaceArgumentType = null;
+        if (array_key_exists($functionReflection->getName(), self::FUNCTIONS_REPLACE_POSITION)) {
+            $replaceArgumentPosition = self::FUNCTIONS_REPLACE_POSITION[$functionReflection->getName()];
+
+            if (count($args) > $replaceArgumentPosition) {
+                $replaceArgumentType = $scope->getType($args[$replaceArgumentPosition]->value);
+                if ($replaceArgumentType->isArray()->yes()) {
+                    $replaceArgumentType = $replaceArgumentType->getIterableValueType();
+                }
+            } elseif ($functionReflection->getName() === 'strtr' && isset($functionCall->getArgs()[1])) {
+                // `strtr` has two signatures: `strtr($string1, $string2, $string3)` and `strtr($string1, $array)`
+                $secondArgumentType = TypeCombinator::intersect(
+                    new ArrayType(new MixedType(), new MixedType()),
+                    $scope->getType($functionCall->getArgs()[1]->value),
+                );
+                $replaceArgumentType = $secondArgumentType->getIterableValueType();
+            }
         }
 
-        $arrayType = new ArrayType($mixedType, $mixedType);
-        if ($arrayType->isSuperTypeOf($subjectArgumentType)->yes()) {
-            return $arrayType;
+        $result = [];
+
+        if ($subjectArgumentType->isString()->yes()) {
+            $stringArgumentType = $subjectArgumentType;
+        } else {
+            $stringArgumentType = TypeCombinator::intersect(new StringType(), $subjectArgumentType);
+        }
+        if ($stringArgumentType->isString()->yes()) {
+            $result[] = $this->getReplaceType($stringArgumentType, $replaceArgumentType);
         }
 
-        return $defaultReturnType;
+        if ($subjectArgumentType->isArray()->yes()) {
+            $arrayArgumentType = $subjectArgumentType;
+        } else {
+            $arrayArgumentType = TypeCombinator::intersect(new ArrayType(new MixedType(), new MixedType()), $subjectArgumentType);
+        }
+        if ($arrayArgumentType->isArray()->yes()) {
+            $keyShouldBeOptional = in_array(
+                $functionReflection->getName(),
+                ['preg_replace', 'preg_replace_callback', 'preg_replace_callback_array'],
+                true,
+            );
+
+            $mapped = $arrayArgumentType->mapValueType(
+                fn (Type $value): Type => $this->getReplaceType($value, $replaceArgumentType),
+            );
+            if ($keyShouldBeOptional) {
+                $mapped = $mapped->makeAllArrayKeysOptional();
+            }
+
+            $result[] = $mapped;
+        }
+
+        return TypeCombinator::union(...$result);
     }
+
+    private function getReplaceType(
+        Type $subjectArgumentType,
+        ?Type $replaceArgumentType,
+    ): Type
+    {
+        if ($replaceArgumentType === null) {
+            return new StringType();
+        }
+
+        $accessories = [];
+        if ($subjectArgumentType->isNonFalsyString()->yes() && $replaceArgumentType->isNonFalsyString()->yes()) {
+            $accessories[] = new AccessoryNonFalsyStringType();
+        } elseif ($subjectArgumentType->isNonEmptyString()->yes() && $replaceArgumentType->isNonEmptyString()->yes()) {
+            $accessories[] = new AccessoryNonEmptyStringType();
+        }
+
+        if ($subjectArgumentType->isLowercaseString()->yes() && $replaceArgumentType->isLowercaseString()->yes()) {
+            $accessories[] = new AccessoryLowercaseStringType();
+        }
+
+        if ($subjectArgumentType->isUppercaseString()->yes() && $replaceArgumentType->isUppercaseString()->yes()) {
+            $accessories[] = new AccessoryUppercaseStringType();
+        }
+
+        if (count($accessories) > 0) {
+            $accessories[] = new StringType();
+            return new IntersectionType($accessories);
+        }
+
+        return new StringType();
+    }
+
+    private function getSubjectType(
+        FunctionReflection $functionReflection,
+        FuncCall $functionCall,
+        Scope $scope,
+    ): ?Type
+    {
+        if (!array_key_exists($functionReflection->getName(), self::FUNCTIONS_SUBJECT_POSITION)) {
+            throw new ShouldNotHappenException();
+        }
+
+        $argumentPosition = self::FUNCTIONS_SUBJECT_POSITION[$functionReflection->getName()];
+        $args = $functionCall->getArgs();
+        if (count($args) <= $argumentPosition) {
+            return null;
+        }
+        return $scope->getType($args[$argumentPosition]->value);
+    }
+
+    private function canReturnNull(
+        FunctionReflection $functionReflection,
+        FuncCall $functionCall,
+        Scope $scope,
+    ): bool
+    {
+        $args = $functionCall->getArgs();
+        if (
+            in_array($functionReflection->getName(), ['preg_replace', 'preg_replace_callback', 'preg_replace_callback_array'], true)
+            && count($args) > 0
+        ) {
+            $subjectArgumentType = $this->getSubjectType($functionReflection, $functionCall, $scope);
+
+            if (
+                $subjectArgumentType !== null
+                && $subjectArgumentType->isArray()->yes()
+            ) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
 }
