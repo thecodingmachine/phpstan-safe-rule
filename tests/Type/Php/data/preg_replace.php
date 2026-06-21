@@ -29,13 +29,13 @@ class HelloWorld
         assertType('non-falsy-string', $escapedValue);
 
         if (is_string($value) && str_contains($value, '\u')) {
-            $escapedValue = preg_replace(
+            $escapedValue = \Safe\preg_replace(
                 self::UNICODE_CHARACTER_REGEX,
                 '|0x$1',
                 $escapedValue,
             );
         }
-        assertType('non-falsy-string|null', $escapedValue);
+        assertType('non-falsy-string', $escapedValue);
 
         return $escapedValue;
     }
