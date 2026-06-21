@@ -45,11 +45,13 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
     ];
 
     private const FUNCTIONS_REPLACE_POSITION = [
-        'preg_replace' => 1,
+        'Safe\preg_replace' => 1,
+        /*
         'str_replace' => 1,
         'str_ireplace' => 1,
         'substr_replace' => 1,
         'strtr' => 2,
+        */
     ];
 
     public function isFunctionSupported(FunctionReflection $functionReflection): bool
