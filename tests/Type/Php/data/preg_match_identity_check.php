@@ -22,10 +22,10 @@ $expectedType = "array{0: non-falsy-string, 1: non-empty-string, 2: 'o', 3?: 'Wo
 
 // BUG: $matches is NOT narrowed — actual type is array{}|array{...} instead of array{...}
 if (1 === preg_match($pattern, $string, $matches)) {
-    \PHPStan\Testing\assertSuperType($expectedType, $matches);
+    \PHPStan\Testing\assertType($expectedType, $matches);
 }
 
 // BUG: same issue via FQCN
 if (1 === \Safe\preg_match($pattern, $string, $matches2)) {
-    \PHPStan\Testing\assertSuperType($expectedType, $matches2);
+    \PHPStan\Testing\assertType($expectedType, $matches2);
 }
