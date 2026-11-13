@@ -63,8 +63,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope,
-    ): ?Type
-    {
+    ): ?Type {
         $type = $this->getPreliminarilyResolvedTypeFromFunctionCall($functionReflection, $functionCall, $scope);
 
         if ($type !== null && $this->canReturnNull($functionReflection, $functionCall, $scope)) {
@@ -78,8 +77,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope,
-    ): ?Type
-    {
+    ): ?Type {
         $subjectArgumentType = $this->getSubjectType($functionReflection, $functionCall, $scope);
         $args = $functionCall->getArgs();
 
@@ -155,8 +153,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
     private function getReplaceType(
         Type $subjectArgumentType,
         ?Type $replaceArgumentType,
-    ): Type
-    {
+    ): Type {
         if ($replaceArgumentType === null) {
             return new StringType();
         }
@@ -188,8 +185,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope,
-    ): ?Type
-    {
+    ): ?Type {
         if (!array_key_exists($functionReflection->getName(), self::FUNCTIONS_SUBJECT_POSITION)) {
             throw new ShouldNotHappenException();
         }
@@ -206,17 +202,14 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
         FunctionReflection $functionReflection,
         FuncCall $functionCall,
         Scope $scope,
-    ): bool
-    {
+    ): bool {
         $args = $functionCall->getArgs();
-        if (
-            in_array($functionReflection->getName(), ['preg_replace', 'preg_replace_callback', 'preg_replace_callback_array'], true)
+        if (in_array($functionReflection->getName(), ['preg_replace', 'preg_replace_callback', 'preg_replace_callback_array'], true)
             && count($args) > 0
         ) {
             $subjectArgumentType = $this->getSubjectType($functionReflection, $functionCall, $scope);
 
-            if (
-                $subjectArgumentType !== null
+            if ($subjectArgumentType !== null
                 && $subjectArgumentType->isArray()->yes()
             ) {
                 return false;
@@ -227,5 +220,4 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
 
         return false;
     }
-
 }
