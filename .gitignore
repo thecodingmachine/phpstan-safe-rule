@@ -6,3 +6,4 @@
 /tmp
 /build/
 *.cache
+.phpactor.json
