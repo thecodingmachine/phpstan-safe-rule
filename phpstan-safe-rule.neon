@@ -27,3 +27,7 @@ services:
       class: TheCodingMachine\Safe\PHPStan\Type\Php\JsonDecodeDynamicReturnTypeExtension
       tags:
         - phpstan.broker.dynamicFunctionReturnTypeExtension
+  -
+    class: TheCodingMachine\Safe\PHPStan\Type\Php\NativeReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicFunctionReturnTypeExtension
