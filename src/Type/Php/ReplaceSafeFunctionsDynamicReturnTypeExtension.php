@@ -1,6 +1,5 @@
 <?php declare(strict_types = 1);
 
-
 namespace TheCodingMachine\Safe\PHPStan\Type\Php;
 
 use PhpParser\Node\Expr\FuncCall;
@@ -104,7 +103,9 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
                 if ($replaceArgumentType->isArray()->yes()) {
                     $replaceArgumentType = $replaceArgumentType->getIterableValueType();
                 }
-            } elseif ($functionReflection->getName() === 'strtr' && isset($functionCall->getArgs()[1])) {
+            }
+            /*
+            elseif ($functionReflection->getName() === 'strtr' && isset($functionCall->getArgs()[1])) {
                 // `strtr` has two signatures: `strtr($string1, $string2, $string3)` and `strtr($string1, $array)`
                 $secondArgumentType = TypeCombinator::intersect(
                     new ArrayType(new MixedType(), new MixedType()),
@@ -112,6 +113,7 @@ class ReplaceSafeFunctionsDynamicReturnTypeExtension implements DynamicFunctionR
                 );
                 $replaceArgumentType = $secondArgumentType->getIterableValueType();
             }
+            */
         }
 
         $result = [];
